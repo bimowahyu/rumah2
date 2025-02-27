@@ -465,8 +465,8 @@ const handleSubmit = async (e) => {
   const requiredCoordinateKecamatan = ["Maluk", "Jereweh"];
 
   if (requiredCoordinateKecamatan.includes(formData.kecamatan)) {
-    if (!formData.titikKoordinatRumah && !formData.manualTitikKoordinatRumah) {
-      setErrorMessage("Untuk Kecamatan Maluk dan Jereweh, salah satu koordinat harus diisi.");
+    if (!formData.titikKoordinatRumah) {
+      setErrorMessage("Untuk Kecamatan Maluk dan Jereweh, koordinat harus diambil otomatis.");
       setModalOpen(true);
       return;
     }
@@ -477,8 +477,14 @@ const handleSubmit = async (e) => {
       return;
     }
 
-    if (formData.manualTitikKoordinatRumah && !validateCoordinate(formData.manualTitikKoordinatRumah)) {
-      setErrorMessage("Format Koordinat Manual tidak valid. Gunakan format latitude,longitude.");
+    if (formData.manualTitikKoordinatRumah) {
+      setErrorMessage("Untuk Kecamatan Maluk dan Jereweh, koordinat manual tidak diperbolehkan.");
+      setModalOpen(true);
+      return;
+    }
+
+    if (!validateCoordinate(formData.titikKoordinatRumah)) {
+      setErrorMessage("Format Titik Koordinat Rumah tidak valid. Gunakan format latitude,longitude.");
       setModalOpen(true);
       return;
     }
@@ -1379,17 +1385,18 @@ const handleSubmit = async (e) => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="manualTitikKoordinatRumah">Atau Masukkan Koordinat Manual</Label>
-              <Input
-                type="text"
-                name="manualTitikKoordinatRumah"
-                id="manualTitikKoordinatRumah"
-                value={formData.manualTitikKoordinatRumah || ""}
-                onChange={handleChange}
-                invalid={!!errors.manualTitikKoordinatRumah}
-                className="input-center"
-              />
-            </FormGroup>
+                <Label for="manualTitikKoordinatRumah">Atau Masukkan Koordinat Manual</Label>
+                <Input
+                  type="text"
+                  name="manualTitikKoordinatRumah"
+                  id="manualTitikKoordinatRumah"
+                  value={formData.manualTitikKoordinatRumah || ""}
+                  onChange={handleChange}
+                  invalid={!!errors.manualTitikKoordinatRumah}
+                  className="form-input"
+                  disabled={["Maluk", "Jereweh"].includes(formData.kecamatan)} // Disable jika kecamatan termasuk Maluk/Jereweh
+                />
+              </FormGroup>
 
             <FormGroup>
               <Label for="tanggalPendataan">57. Tanggal Pendataan</Label>
